@@ -1,6 +1,6 @@
 # ✈️ KelanaAI - AI Travel Planner
 
-KelanaAI adalah aplikasi perencanaan perjalanan (Travel Planner) pintar berbasis Python, Next.js, dan Amazon Bedrock.
+KelanaAI adalah aplikasi perencanaan perjalanan (_Travel Planner_) pintar berbasis Python, Next.js, dan Amazon Bedrock.
 
 ---
 
@@ -18,6 +18,13 @@ KelanaAI adalah aplikasi perencanaan perjalanan (Travel Planner) pintar berbasis
 - **Kalkulasi Anggaran Harian:** Perhitungan otomatis estimasi pengeluaran per hari (`budget / days`).
 - **Engine Rekomendasi Tempat:** Rekomendasi tempat wisata berbasis koleksi tipe data _list_ dan perulangan.
 
+### Sesi 3: Teaching KelanaAI to Communicate (REST API dengan FastAPI)
+
+- **Web Presentation Layer:** Mentransformasi aplikasi konsol menjadi REST API interaktif berbasis FastAPI dan Uvicorn.
+- **Data Validation:** Menggunakan Pydantic (`TripRequest`) untuk memvalidasi _request body_.
+- **Separation of Concerns:** Memanfaatkan kembali seluruh fungsi bisnis dari `services/trip_service.py` tanpa mengubah _logic_ di dalamnya.
+- **Interactive Documentation:** Mendukung pengujian _endpoint_ otomatis via Swagger UI (`/docs`).
+
 ---
 
 ## 🛠️ Struktur Proyek
@@ -25,6 +32,7 @@ KelanaAI adalah aplikasi perencanaan perjalanan (Travel Planner) pintar berbasis
 ```text
 kelana-ai/
 ├── README.md
+├── .gitignore
 ├── backend/
 │   ├── main.py
 │   └── services/
