@@ -23,6 +23,7 @@ KelanaAI adalah aplikasi perencanaan perjalanan (_Travel Planner_) pintar berbas
 - **Web Presentation Layer:** Mentransformasi aplikasi konsol menjadi REST API interaktif berbasis FastAPI dan Uvicorn.
 - **Data Validation:** Menggunakan Pydantic (`TripRequest`) untuk memvalidasi _request body_.
 - **Separation of Concerns:** Memanfaatkan kembali seluruh fungsi bisnis dari `services/trip_service.py` tanpa mengubah _logic_ di dalamnya.
+- **Homework Endpoints (GET Lists):** Penambahan endpoint `/api/v1/recommendations` dan `/api/v1/transportations` untuk serialisasi otomatis Python List ke JSON.
 - **Interactive Documentation:** Mendukung pengujian _endpoint_ otomatis via Swagger UI (`/docs`).
 
 ---
@@ -32,6 +33,7 @@ KelanaAI adalah aplikasi perencanaan perjalanan (_Travel Planner_) pintar berbas
 ```text
 kelana-ai/
 ├── README.md
+├── TASKS.md
 ├── .gitignore
 ├── backend/
 │   ├── main.py

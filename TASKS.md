@@ -43,16 +43,13 @@ Dokumen ini mencatat riwayat pengerjaan tugas (_checklist_ pengerjaan) dari Sesi
   - `GET /` → Pesan sambutan API (`{"message": "Welcome to KelanaAI"}`).
   - `GET /health` → Endpoint status kesehatan server (`{"status": "OK"}`).
   - `POST /api/v1/trips` → Endpoint kalkulasi _daily budget_ & kategori trip.
+- [x] **Homework Extension**:
+  - `GET /api/v1/recommendations` → Mengembalikan list rekomendasi tempat wisata.
+  - `GET /api/v1/transportations` → Mengembalikan list pilihan moda transportasi.
 - [x] **API Testing & Documentation**:
   - Pengujian _endpoint_ berhasil 100% via Swagger UI (`http://localhost:8000/docs`).
-  - Pembaruan dokumen `README.md` dan pembuatan `TASKS.md`.
+  - Pembaruan dokumen `README.md` dan `TASKS.md`.
 - [x] **Release Management**:
   - Mengunci rilis Sesi 3 dengan tag `session-3`.
 
 ---
-
-## 🔮 Upcoming Tasks (Sesi Selanjutnya)
-
-- [ ] _Integrasi Amazon Bedrock / LLM Agent_
-- [ ] _Pengembangan Frontend (Next.js)_
-- [ ] _Deployment & Cloud Integration_

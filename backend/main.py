@@ -1,6 +1,6 @@
 """
 KelanaAI - Web Presentation Layer (FastAPI)
-Sesi 3: REST API Implementation
+Sesi 3: REST API Implementation + Homework Endpoints
 """
 
 import sys
@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 # Memastikan direktori utama bisa mengimpor folder services
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Import fungsi logika bisnis dari trip_service.py (TANPA MENGUBAH TRIPS_SERVICE.PY)
+# Import fungsi logika bisnis dari trip_service.py (TANPA MENGUBAH TRIP_SERVICE.PY)
 from services.trip_service import (
     calculate_daily_budget,
     get_trip_category
@@ -46,11 +46,9 @@ def health_check():
 # 4. Endpoint 3 — POST /api/v1/trips
 @app.post("/api/v1/trips")
 def create_trip_plan(request: TripRequest):
-    # Panggil fungsi dari trip_service.py
     daily_budget = calculate_daily_budget(request.budget, request.days)
     category = get_trip_category(request.budget)
     
-    # Kembalikan JSON Response sesuai struktur yang diminta
     return {
         "destination": request.destination,
         "days": request.days,
@@ -58,3 +56,19 @@ def create_trip_plan(request: TripRequest):
         "daily_budget": daily_budget,
         "category": category
     }
+
+
+# ==========================================
+# HOMEWORK ENDPOINTS (Sesi 3 Extension)
+# ==========================================
+
+# 5. Endpoint 4 — GET /api/v1/recommendations
+@app.get("/api/v1/recommendations")
+def get_recommendations():
+    return ["Tokyo Tower", "Mount Fuji", "Shibuya"]
+
+
+# 6. Endpoint 5 — GET /api/v1/transportations
+@app.get("/api/v1/transportations")
+def get_transportations():
+    return ["Bus", "Train", "Flight"]
