@@ -1,74 +1,110 @@
-"""
-KelanaAI - Web Presentation Layer (FastAPI)
-Sesi 3: REST API Implementation + Homework Endpoints
-"""
-
 import sys
 import os
-from fastapi import FastAPI
-from pydantic import BaseModel, Field
+from fastapi import FastAPI, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from typing import List
 
-# Memastikan direktori utama bisa mengimpor folder services
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Memastikan direktori backend/ dan root masuk ke sys.path
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Import fungsi logika bisnis dari trip_service.py (TANPA MENGUBAH TRIP_SERVICE.PY)
-from services.trip_service import (
-    calculate_daily_budget,
-    get_trip_category
-)
+# Import langsung dari modul lokal (TANPA awalan 'backend.')
+from database import SessionLocal, init_db
+from models.trip import Trip
+from schemas.trip import TripCreate, TripUpdate, TripResponse
+from services.trip_service import calculate_daily_budget, get_trip_category
 
-# Inisialisasi Aplikasi FastAPI
+# Inisialisasi tabel di PostgreSQL saat aplikasi berjalan
+init_db()
+
 app = FastAPI(
     title="KelanaAI API",
-    description="REST API untuk Perencana Perjalanan KelanaAI",
-    version="1.0.0"
+    description="REST API untuk Perencana Perjalanan KelanaAI (Sesi 4 - Database Persistence)",
+    version="2.0.0"
 )
 
-# 1. Pydantic Model untuk Request Body
-class TripRequest(BaseModel):
-    destination: str = Field(..., example="Japan")
-    days: int = Field(..., gt=0, example=5)
-    budget: float = Field(..., ge=0, example=2000)
+# Dependency DB Session Lifecycle
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-
-# 2. Endpoint 1 — GET /
+# 1. Endpoint Home & Health Check
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to KelanaAI"}
+    return {"message": "Welcome to KelanaAI API"}
 
-
-# 3. Endpoint 2 — GET /health
 @app.get("/health")
 def health_check():
     return {"status": "OK"}
 
-
-# 4. Endpoint 3 — POST /api/v1/trips
-@app.post("/api/v1/trips")
-def create_trip_plan(request: TripRequest):
+# 2. [POST] Create Trip (Simpan ke Database PostgreSQL)
+@app.post("/api/v1/trips", response_model=TripResponse, status_code=status.HTTP_201_CREATED)
+def create_trip(request: TripCreate, db: Session = Depends(get_db)):
     daily_budget = calculate_daily_budget(request.budget, request.days)
     category = get_trip_category(request.budget)
     
-    return {
-        "destination": request.destination,
-        "days": request.days,
-        "budget": request.budget,
-        "daily_budget": daily_budget,
-        "category": category
-    }
+    trip = Trip(
+        destination=request.destination,
+        days=request.days,
+        budget=request.budget,
+        category=category,
+        daily_budget=daily_budget
+    )
+    db.add(trip)
+    db.commit()
+    db.refresh(trip)
+    return trip
 
+# 3. [GET] List All Trips
+@app.get("/api/v1/trips", response_model=List[TripResponse])
+def list_trips(db: Session = Depends(get_db)):
+    return db.query(Trip).all()
+
+# 4. [GET] Get Trip by ID
+@app.get("/api/v1/trips/{trip_id}", response_model=TripResponse)
+def get_trip(trip_id: int, db: Session = Depends(get_db)):
+    trip = db.query(Trip).filter(Trip.id == trip_id).first()
+    if not trip:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail=f"Trip with id {trip_id} not found"
+        )
+    return trip
 
 # ==========================================
-# HOMEWORK ENDPOINTS (Sesi 3 Extension)
+# HOMEWORK SESI 4: PUT & DELETE ENDPOINTS
 # ==========================================
 
-# 5. Endpoint 4 — GET /api/v1/recommendations
-@app.get("/api/v1/recommendations")
-def get_recommendations():
-    return ["Tokyo Tower", "Mount Fuji", "Shibuya"]
+# 5. [PUT] Update Budget & Recalculate
+@app.put("/api/v1/trips/{trip_id}", response_model=TripResponse)
+def update_trip_budget(trip_id: int, request: TripUpdate, db: Session = Depends(get_db)):
+    trip = db.query(Trip).filter(Trip.id == trip_id).first()
+    if not trip:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Trip with id {trip_id} not found"
+        )
+    
+    trip.budget = request.budget
+    trip.daily_budget = calculate_daily_budget(request.budget, trip.days)
+    trip.category = get_trip_category(request.budget)
+    
+    db.commit()
+    db.refresh(trip)
+    return trip
 
-
-# 6. Endpoint 5 — GET /api/v1/transportations
-@app.get("/api/v1/transportations")
-def get_transportations():
-    return ["Bus", "Train", "Flight"]
+# 6. [DELETE] Delete Trip by ID
+@app.delete("/api/v1/trips/{trip_id}", status_code=status.HTTP_200_OK)
+def delete_trip(trip_id: int, db: Session = Depends(get_db)):
+    trip = db.query(Trip).filter(Trip.id == trip_id).first()
+    if not trip:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Trip with id {trip_id} not found"
+        )
+    
+    db.delete(trip)
+    db.commit()
+    return {"message": f"Trip with id {trip_id} successfully deleted"}
