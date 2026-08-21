@@ -1,6 +1,6 @@
 # ✈️ KelanaAI - AI Travel Planner
 
-KelanaAI adalah aplikasi perencanaan perjalanan (_Travel Planner_) pintar berbasis Python, Next.js, dan Amazon Bedrock.
+KelanaAI adalah aplikasi perencanaan perjalanan (_Travel Planner_) pintar berbasis Python, FastAPI, dan PostgreSQL.
 
 ---
 
@@ -23,8 +23,20 @@ KelanaAI adalah aplikasi perencanaan perjalanan (_Travel Planner_) pintar berbas
 - **Web Presentation Layer:** Mentransformasi aplikasi konsol menjadi REST API interaktif berbasis FastAPI dan Uvicorn.
 - **Data Validation:** Menggunakan Pydantic (`TripRequest`) untuk memvalidasi _request body_.
 - **Separation of Concerns:** Memanfaatkan kembali seluruh fungsi bisnis dari `services/trip_service.py` tanpa mengubah _logic_ di dalamnya.
-- **Homework Endpoints (GET Lists):** Penambahan endpoint `/api/v1/recommendations` dan `/api/v1/transportations` untuk serialisasi otomatis Python List ke JSON.
+- **Homework Endpoints (GET Lists):** Penambahan endpoint `/api/v1/recommendations` dan `/api/v1/transportations`.
 - **Interactive Documentation:** Mendukung pengujian _endpoint_ otomatis via Swagger UI (`/docs`).
+
+### Sesi 4: Database Persistence & Full CRUD Operations
+
+- **Database Integration:** Mengintegrasikan database **PostgreSQL** berbasis Docker Container dengan SQLAlchemy ORM.
+- **Data Modeling & Schemas:** Pembuatan database model (`Trip`) dan schema Pydantic (`TripCreate`, `TripUpdate`, `TripResponse`).
+- **Full CRUD Endpoints:**
+  - `POST /api/v1/trips` → Membuat dan menyimpan rencana perjalanan ke PostgreSQL.
+  - `GET /api/v1/trips` → Menampilkan daftar seluruh data perjalanan dari database.
+  - `GET /api/v1/trips/{trip_id}` → Menampilkan detail rencana perjalanan spesifik.
+  - `PUT /api/v1/trips/{trip_id}` → Memperbarui anggaran perjalanan dan menghitung ulang alokasi harian serta kategori.
+  - `DELETE /api/v1/trips/{trip_id}` → Menghapus data perjalanan dari database.
+- **Environment Variable Management:** Mengamankan kredensial database menggunakan berkas `.env` dan `python-dotenv`.
 
 ---
 
@@ -32,11 +44,20 @@ KelanaAI adalah aplikasi perencanaan perjalanan (_Travel Planner_) pintar berbas
 
 ```text
 kelana-ai/
+├── .env
+├── .gitignore
 ├── README.md
 ├── TASKS.md
-├── .gitignore
+├── requirements.txt
 ├── backend/
+│   ├── database.py
 │   ├── main.py
+│   ├── models/
+│   │   ├── __init__.py
+│   │   └── trip.py
+│   ├── schemas/
+│   │   ├── __init__.py
+│   │   └── trip.py
 │   └── services/
 │       ├── __init__.py
 │       └── trip_service.py

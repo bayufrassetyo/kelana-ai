@@ -1,6 +1,6 @@
 # 📋 KelanaAI - Development Tasks & Roadmap
 
-Dokumen ini mencatat riwayat pengerjaan tugas (_checklist_ pengerjaan) dari Sesi 1 hingga Sesi 3.
+Dokumen ini mencatat riwayat pengerjaan tugas (_checklist_ pengerjaan) dari Sesi 1 hingga Sesi 4.
 
 ---
 
@@ -53,3 +53,23 @@ Dokumen ini mencatat riwayat pengerjaan tugas (_checklist_ pengerjaan) dari Sesi
   - Mengunci rilis Sesi 3 dengan tag `session-3`.
 
 ---
+
+## 🎯 Sesi 4: Database Persistence & Full CRUD Operations
+
+- [x] **Database & Infrastructure Setup**:
+  - Menjalankan PostgreSQL Container via Docker (`postgres-kelana`).
+  - Konfigurasi variabel lingkungan koneksi database pada berkas `.env`.
+  - Menyiapkan SQLAlchemy session & engine pada `backend/database.py`.
+- [x] **Data Architecture (Models & Schemas)**:
+  - Membuat SQLAlchemy Model `Trip` di `backend/models/trip.py` untuk tabel `trips`.
+  - Membuat Pydantic Schemas (`TripCreate`, `TripUpdate`, `TripResponse`) di `backend/schemas/trip.py`.
+- [x] **Full CRUD API Implementation (`backend/main.py`)**:
+  - [x] `POST /api/v1/trips` → Persistensi data trip baru ke PostgreSQL.
+  - [x] `GET /api/v1/trips` → Pengambilan seluruh daftar trip dari database.
+  - [x] `GET /api/v1/trips/{trip_id}` → Pengambilan data trip berdasarkan ID spesifik.
+  - [x] `PUT /api/v1/trips/{trip_id}` (Homework) → Pembaruan budget dan re-kalkulasi daily budget serta kategori.
+  - [x] `DELETE /api/v1/trips/{trip_id}` (Homework) → Penghapusan record trip berdasarkan ID.
+- [x] **Final Testing & Release Management**:
+  - Pengujian seluruh alokasi CRUD berhasil 100% via Swagger UI (`/docs`).
+  - Pembaruan dokumentasi `README.md` dan `TASKS.md`.
+  - Mengunci rilis Sesi 4 dengan tag `session-4`.
